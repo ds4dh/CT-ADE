@@ -103,9 +103,7 @@ If you opt for HuggingFace data, proceed directly to Step 3.
 
 #### Clinical Trials (CTs)
 
-You have two options for CT data:
-- For full reproducibility, [download](https://www.google.com/) our screenshot and extract `AllAPIJSON.zip` into `./data/all_cts/`.
-- For the most up-to-date CTs, execute `0a_download_data.py`.
+For the most up-to-date CTs, execute `0a_download_data.py`.
 
 #### DrugBank
 
