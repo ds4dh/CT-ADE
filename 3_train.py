@@ -8,9 +8,9 @@ smiles_max_len=512
 batch_size = 16
 num_epochs = 20
 learning_rate=2e-5
-device = 'cuda:4'
-feature_use_config = {'group_desc': True, 'eligibility': False, 'smiles': True}
-model_saving_path = './models/smiles/train_augmented/smiles_group_desc/model.pt'
+device = 'cuda:0'
+feature_use_config = {'group_desc': True, 'eligibility': True, 'smiles': True}
+model_saving_path = './models/smiles/train_augmented/all/model.pt'
 
 if __name__ == '__main__':
 
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     # Check if the directory exists, if not, create it
     if not os.path.exists(directory):
         os.makedirs(directory)
-    
+
     # Load data
     train_df, val_df, test_df = load_trial_data(path_to_data)
 

@@ -14,7 +14,7 @@ text_model_name = "microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext
 smiles_model_name = "DeepChem/ChemBERTa-77M-MLM"
 trained_model_path = './models/smiles/train_augmented/all/model.pt'
 test_set = pd.read_csv("./data/classification/smiles/train_augmented/test.csv")
-output_filename = "IG_test_set_output_clean.pkl"
+output_filename = "IG_test_set_output.pkl"
 
 if __name__ == '__main__':
 
