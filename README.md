@@ -105,6 +105,8 @@ If you opt for HuggingFace data, proceed directly to Step 3.
 
 For the most up-to-date CTs, execute `0a_download_data.py`.
 
+Note that this dataset will differ from the one on HuggingFace due to new clinical trials that have been completed since the original dataset was compiled.
+
 #### DrugBank
 
 After obtaining access to [DrugBank](https://go.drugbank.com/), place the XML database in `./drugbank_data/`.
