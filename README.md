@@ -1,5 +1,5 @@
-# CTADE
-CTADE: An Evaluation Benchmark for Adverse Drug Event Prediction from Clinical Trial Protocols
+# CT-ADE
+CT-ADE: An Evaluation Benchmark for Adverse Drug Event Prediction from Clinical Trial Protocols
 
 ----------------
 # Developed with
@@ -61,7 +61,7 @@ conda env remove --name CTADE
 │
 ├── 1_extract_completed_interventional_results_ades.py (Extracts relevant clinical trials)
 │
-├── 2_preprocess_data.py (Create the CTADE final dataset; ready for model training)
+├── 2_preprocess_data.py (Create the CT-ADE final dataset; ready for model training)
 │
 ├── 3_train.py (Trains the ADE prediction model)
 │
