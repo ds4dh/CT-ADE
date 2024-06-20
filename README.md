@@ -14,7 +14,7 @@ CT-ADE: An Evaluation Benchmark for Adverse Drug Event Prediction from Clinical 
 ### Installation of Required Python Libraries
 
 1. Set up your environment and install the necessary Python libraries.
-2. Put your unzipped MedDRA files in "./data/MedDRA_25_0_English" and your DrugBank xml database in "./data/drugbank".
+2. Put your unzipped MedDRA files in `./data/MedDRA_25_0_English` and your DrugBank xml database in `./data/drugbank`.
 
 ## Repository Structure
 
