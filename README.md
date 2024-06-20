@@ -243,16 +243,52 @@ Navigate to the `modeling/DLLMs` directory and run the training scripts with the
 
 ```bash
 cd modeling/DLLMs
-...
+```
+
+For single-GPU training, use this command:
+
+```bash
+export CUDA_VISIBLE_DEVICES="0"; \
+export MIXED_PRECISION="bf16"; \
+FIRST_GPU=$(echo $CUDA_VISIBLE_DEVICES | cut -d ',' -f 1); \
+BASE_PORT=29500; \
+PORT=$(( $BASE_PORT + $FIRST_GPU )); \
+accelerate launch \
+--mixed_precision=$MIXED_PRECISION \
+--num_processes=$(( $(echo $CUDA_VISIBLE_DEVICES | grep -o "," | wc -l) + 1 )) \
+--num_machines=1 \
+--dynamo_backend=no \
+--main_process_port=$PORT \
+train.py
+```
+
+For multi-GPU training, use this command:
+
+```bash
+export CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7"; \
+export MIXED_PRECISION="bf16"; \
+FIRST_GPU=$(echo $CUDA_VISIBLE_DEVICES | cut -d ',' -f 1); \
+BASE_PORT=29500; \
+PORT=$(( $BASE_PORT + $FIRST_GPU )); \
+accelerate launch \
+--mixed_precision=$MIXED_PRECISION \
+--num_processes=$(( $(echo $CUDA_VISIBLE_DEVICES | grep -o "," | wc -l) + 1 )) \
+--num_machines=1 \
+--dynamo_backend=no \
+--main_process_port=$PORT \
+train.py
 ```
 
 ### Generative Models (GLLMs)
 
 Navigate to the `modeling/GLLMs` directory and run the training scripts for different configurations.
 
-For example, to train a model using SMILES only:
-
 ```bash
 cd modeling/GLLMs
-...
+```
+
+Example configurations for LLama3, OpenBioLLM, and Meditron are provided in the folder. You can copy the desired configuration into `config.py` and adjust it to your convenience. Next, you can execute the following for the SGE configuration:
+
+```bash
+python train_SGE.py
 ```
