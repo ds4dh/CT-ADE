@@ -127,13 +127,13 @@ def process_group(group_id: str) -> Dict[str, Any]:
 
     if not pass_condition:
         return None
-    
+
     event_labels = event_type_classification(group_df)
 
     # Check if all labels are zero
     if event_labels.eq(0).all():
         return None
-        
+
     result = {
         "nctid": group_df["nctid"].iloc[0],
         "group_id": group_df["group_id"].iloc[0],
@@ -268,54 +268,6 @@ def main() -> None:
 
     # Combine all processed chunks
     ct_ade_meddra = pd.concat(results, ignore_index=True)
-
-    #### Event type classification ####
-
-    # Get all unique group_ids
-    group_ids = ct_ade_meddra["group_id"].unique()
-
-    # Create a pool of workers to process each group
-    with Pool(
-        cpu_count(), initializer=init_globals, initargs=(deepcopy(ct_ade_meddra),)
-    ) as pool:
-        results = list(
-            tqdm(
-                pool.imap(process_group, group_ids),
-                total=len(group_ids),
-                desc="Creating CT-ADE ET",
-            )
-        )
-
-    # Create a DataFrame from the results
-    event_type_classification_df = pd.DataFrame([result for result in results if isinstance(result, dict)])
-    event_type_classification_df = event_type_classification_df.sort_values(
-        by="group_id"
-    )
-    event_type_classification_df = event_type_classification_df.reset_index(drop=True)
-    print("event_type_classification_df", f"{len(event_type_classification_df)} study groups", f"{event_type_classification_df.smiles.nunique()} unique drugs")
-
-    # Compute train, val and test set making sure there is no drug overlap
-    unique_smiles = ct_ade_meddra["smiles"].unique()
-    train_smiles, test_smiles = train_test_split(
-        unique_smiles, train_size=0.8, random_state=37
-    )
-    test_val_smiles, val_smiles = train_test_split(
-        test_smiles, train_size=0.1 / (0.1 + 0.1), random_state=37
-    )
-
-    # Split the data
-    train_df, val_df, test_df = split_dataframe_by_smiles(
-        event_type_classification_df, train_smiles, val_smiles, test_val_smiles
-    )
-
-    # Save data
-    output_folder = Path("./data/ct_ade/event_type")
-    output_folder.mkdir(parents=True, exist_ok=True)
-
-    # Save each split separately to ensure data is not mixed in subsequent analyses
-    train_df.to_csv(output_folder / "train.csv", index=False)
-    val_df.to_csv(output_folder / "val.csv", index=False)
-    test_df.to_csv(output_folder / "test.csv", index=False)
 
     #### SOC classification ####
 
