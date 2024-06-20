@@ -1,8 +1,7 @@
 # CT-ADE
-CT-ADE: An Evaluation Benchmark for Adverse Drug Event Prediction from Clinical Trial Protocols
+CT-ADE: An Evaluation Benchmark for Adverse Drug Event Prediction from Clinical Trial Results
 
-----------------
-# Developed with
+## Developed with
 
 - Operating System: Ubuntu 22.04.3 LTS
     - Kernel: Linux 4.18.0-513.18.1.el8_9.x86_64
@@ -10,147 +9,180 @@ CT-ADE: An Evaluation Benchmark for Adverse Drug Event Prediction from Clinical 
 - Python:
     - 3.10.12
 
-----------------
-
 ## Prerequisites
 
 ### Installation of Required Python Libraries
 
-Set up your environment and install the necessary Python libraries with the following commands:
+1. Set up your environment and install the necessary Python libraries.
+2. Put your unzipped MedDRA files in "./data/MedDRA_25_0_English" and your DrugBank xml database in "./data/drugbank".
 
-```bash
-# Create a new Conda environment.
-conda create -n CTADE python=3.10.12
-
-# Activate the environment.
-conda activate CTADE
-
-# Navigate to the project root directory.
-cd <path_to_project_root>
-
-# Install the required libraries.
-pip install -r requirements.txt
-
-# Follow the steps in the "Typical Pipeline" section for further instructions.
-
-# When finished, deactivate the Conda environment.
-conda deactivate
-
-# Optionally, remove the Conda environment if no longer needed.
-conda env remove --name CTADE
-```
-
-----------------
 ## Repository Structure
 
 ```plaintext
-├── data (Place clinical trial data here)
-│
-├── drugbank_data (Place the DrugBank XML database here)
-│
-├── models
-│   └── smiles (Contains metric tables for models; model weights are not included due to size)
-│
-├── notebooks (Jupyter notebooks for EDA, visualization, etc.)
-│
-├── src (Source code for utilities and functions)
-│
-├── 0a_download_data.py (Downloads the up-to-date clinical trial database)
-│
-├── 0b_extract_drugbank.py (Extracts data from the DrugBank database)
-│
-├── 1_extract_completed_interventional_results_ades.py (Extracts relevant clinical trials)
-│
-├── 2_preprocess_data.py (Create the CT-ADE final dataset; ready for model training)
-│
-├── 3_train.py (Trains the ADE prediction model)
-│
-├── 4_compute_integrated_gradients.py (Computes Integrated Gradients for model interpretability)
-│
-├── LICENSE (Project license)
-│
-├── README.md (This file)
-│
-└── requirements.txt (Required dependencies)
-```
-
-----------------
-## Typical Pipeline
-
-### Option 1: Using Data from HuggingFace
-
-Skip the dataset creation step and train your model using our dataset available on [HuggingFace](https://huggingface.co/datasets/anthonyyazdaniml/CTADE).
-
-Download the splits and organize them in your project folder as follows:
-
-```plaintext
+.
+├── a0_download_clinical_trials.py
+├── a1_extract_completed_or_terminated_interventional_results_clinical_trials.py
+├── a2_extract_and_preprocess_monopharmacy_clinical_trials.py
+├── b0_download_pubchem_cids.py
+├── b1_download_pubchem_cid_details.py
+├── c0_extract_drugbank_dbid_details.py
+├── d0_extract_chembl_approved_CHEMBL_details.py
 ├── data
-│   └── classification
-│       └── smiles
-│           ├── train_base
-│           │   ├── train.csv (rename train_base.csv to train.csv)
-│           │   ├── val.csv (same for both base and augmented scenarios)
-│           │   └── test.csv (same for both base and augmented scenarios)
-│           └── train_augmented
-│               ├── train.csv (rename train_augmented.csv to train.csv)
-│               ├── val.csv (same for both base and augmented scenarios)
-│               └── test.csv (same for both base and augmented scenarios)
+│   ├── MedDRA_25_0_English
+│   │   └── empty.null
+│   └── drugbank
+│       └── empty.null
+├── e0_extract_chembl_usan_CHEMBL_details.py
+├── f0_create_unified_chemical_database.py
+├── g0_create_ct_ade_raw.py
+├── g1_create_ct_ade_meddra.py
+├── g2_create_ct_ade_classification_datasets.py
+├── modeling
+│   ├── DLLMs
+│   │   ├── config.py
+│   │   ├── custom_metrics.py
+│   │   ├── model.py
+│   │   ├── train.py
+│   │   └── utils.py
+│   └── GLLMs
+│       ├── config-llama3.py
+│       ├── config-meditron.py
+│       ├── config-openbiollm.py
+│       ├── config.py
+│       ├── train_S.py
+│       ├── train_SG.py
+│       └── train_SGE.py
+├── requirements.txt
+└── src
+    └── meddra_graph.py
 ```
 
-If you opt for HuggingFace data, proceed directly to Step 3.
+## Typical Pipeline For an Up to Date CT-ADE Dataset
 
-### Option 2: Creating Data from Scratch
+The typical pipeline for generating the CT-ADE dataset and running the models involves several steps. Here follows a step-by-step guide to creating an updated version of CT-ADE. To recreate the original dataset, you can switch to the next section "Typical Pipeline from Checkpoint".
 
-#### Clinical Trials (CTs)
+### 1. Download Clinical Trials Data
 
-For the most up-to-date CTs, execute `0a_download_data.py`.
-
-Note that this dataset will differ from the one on HuggingFace due to new clinical trials that have been completed since the original dataset was compiled.
-
-#### DrugBank
-
-After obtaining access to [DrugBank](https://go.drugbank.com/), place the XML database in `./drugbank_data/`.
-
-### Step 0: Parse the DrugBank Database
+Download clinical trials data from ClinicalTrials.gov using the `a0_download_clinical_trials.py` script.
 
 ```bash
-python 0b_extract_drugbank.py
+python a0_download_clinical_trials.py
 ```
 
-### Step 1: Parse the Clinical Trials
+### 2. Extract Completed or Terminated Interventional Clinical Trials
 
-Keep only the eligible trials:
+Extract only the completed or terminated interventional clinical trials.
 
 ```bash
-python 1_extract_completed_interventional_results_ades.py
+python a1_extract_completed_or_terminated_interventional_results_clinical_trials.py
 ```
 
-### Step 2: Pre-process the Data
+### 3. Extract and Preprocess Monopharmacy Clinical Trials
 
-Prepare the data for model training:
+Filter out and preprocess the monopharmacy clinical trials.
 
 ```bash
-python 2_preprocess_data.py
+python a2_extract_and_preprocess_monopharmacy_clinical_trials.py
 ```
 
-This step creates two folders with data splits inside: `./data/classification/smiles/train_base` and `./data/classification/smiles/train_augmented`.
+### 4. Download PubChem CIDs
 
-### Step 3: Train the Model
-
-Train your desired model:
+Download PubChem CIDs for the drugs used in the clinical trials.
 
 ```bash
-python 3_train.py
+python b0_download_pubchem_cids.py
 ```
 
-Ensure you adjust the parameters at the beginning of the script as needed.
+### 5. Download PubChem CID Details
 
-### Step 4: Compute Integrated Gradients
-
-For model interpretability, compute integrated gradients:
+Download details for the PubChem CIDs.
 
 ```bash
-python 4_compute_integrated_gradients.py
+python b1_download_pubchem_cid_details.py
 ```
 
-Adjust the parameters at the beginning of the script accordingly.
+### 6. Extract DrugBank DBID Details
+
+Extract drug details from the DrugBank database.
+
+```bash
+python c0_extract_drugbank_dbid_details.py
+```
+
+### 7. Extract ChEMBL Approved Details
+
+Extract details of approved drugs from the ChEMBL database.
+
+```bash
+python d0_extract_chembl_approved_CHEMBL_details.py
+```
+
+### 8. Extract ChEMBL USAN Details
+
+Extract details of USAN drugs from the ChEMBL database.
+
+```bash
+python e0_extract_chembl_usan_CHEMBL_details.py
+```
+
+### 9. Create Unified Chemical Database
+
+Create a unified database combining information from PubChem, DrugBank, and ChEMBL.
+
+```bash
+python f0_create_unified_chemical_database.py
+```
+
+### 10. Create Raw CT-ADE Dataset
+
+Generate the raw CT-ADE dataset from the processed clinical trials data.
+
+```bash
+python g0_create_ct_ade_raw.py
+```
+
+### 11. Create MedDRA Annotations
+
+Annotate the CT-ADE dataset with MedDRA terms.
+
+```bash
+python g1_create_ct_ade_meddra.py
+```
+
+### 12. Create Classification Datasets
+
+Generate the final classification datasets for modeling.
+
+```bash
+python g2_create_ct_ade_classification_datasets.py
+```
+
+### 13. Training Models
+
+#### Discriminative Models (DLLMs)
+
+Navigate to the `modeling/DLLMs` directory and run the training scripts with the desired configuration.
+
+```bash
+cd modeling/DLLMs
+...
+```
+
+#### Generative Models (GLLMs)
+
+Navigate to the `modeling/GLLMs` directory and run the training scripts for different configurations.
+
+For example, to train a model using SMILES only:
+
+```bash
+cd modeling/GLLMs
+...
+```
+
+## Typical Pipeline from Checkpoint
+
+If you want to recreate the original dataset starting from a checkpoint, follow these steps. Ensure you have the intermediate data files saved...
+
+## Citation
+
+No citation is available yet.
