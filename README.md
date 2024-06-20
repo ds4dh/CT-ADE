@@ -11,10 +11,14 @@ CT-ADE: An Evaluation Benchmark for Adverse Drug Event Prediction from Clinical 
 
 ## Prerequisites
 
-### Installation of Required Python Libraries
+1. Set up your environment and install the necessary Python libraries as specified in `requirements.txt`. Note that you will need to install the development versions of certain libraries from their respective Git repositories.
+2. Place your unzipped MedDRA files in the directory `./data/MedDRA_25_0_English` and your DrugBank XML database in the directory `./data/drugbank`.
 
-1. Set up your environment and install the necessary Python libraries.
-2. Put your unzipped MedDRA files in `./data/MedDRA_25_0_English` and your DrugBank xml database in `./data/drugbank`.
+Ensure you clone and install the following libraries directly from their Git repositories for the development versions:
+
+- [`transformers`](https://github.com/huggingface/transformers)
+- [`trl`](https://github.com/huggingface/trl)
+- [`flash_attention`](https://github.com/Dao-AILab/flash-attention)
 
 ## Repository Structure
 
@@ -57,9 +61,15 @@ CT-ADE: An Evaluation Benchmark for Adverse Drug Event Prediction from Clinical 
     └── meddra_graph.py
 ```
 
-## Typical Pipeline For an Up to Date CT-ADE Dataset
+## Typical Pipeline from Checkpoint
 
-The typical pipeline for generating the CT-ADE dataset and running the models involves several steps. Here follows a step-by-step guide to creating an updated version of CT-ADE. To recreate the original dataset, you can switch to the next section "Typical Pipeline from Checkpoint".
+Follow this procedure if you aim to recreate the original dataset as detailed in our paper. For instructions on creating an updated version of CT-ADE, refer to the next section titled `Typical Pipeline For an Up-to-Date CT-ADE Dataset`.
+
+Ensure you have the intermediate data files saved...
+
+## Typical Pipeline For an Up-to-Date CT-ADE Dataset
+
+The typical pipeline for generating the CT-ADE dataset and running the models involves several steps. Here follows a step-by-step guide to creating an updated version of CT-ADE.
 
 ### 1. Download Clinical Trials Data
 
@@ -178,10 +188,6 @@ For example, to train a model using SMILES only:
 cd modeling/GLLMs
 ...
 ```
-
-## Typical Pipeline from Checkpoint
-
-If you want to recreate the original dataset starting from a checkpoint, follow these steps. Ensure you have the intermediate data files saved...
 
 ## Citation
 
