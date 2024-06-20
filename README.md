@@ -1,6 +1,10 @@
 # CT-ADE
 CT-ADE: An Evaluation Benchmark for Adverse Drug Event Prediction from Clinical Trial Results
 
+## Citation
+
+No citation is available yet.
+
 ## Developed with
 
 - Operating System: Ubuntu 22.04.3 LTS
@@ -34,7 +38,15 @@ Ensure you clone and install the following libraries directly from their Git rep
 ├── data
 │   ├── MedDRA_25_0_English
 │   │   └── empty.null
-│   └── drugbank
+│   ├── chembl_approved
+│   │   └── empty.null
+│   ├── chembl_usan
+│   │   └── empty.null
+│   ├── clinicaltrials_gov
+│   │   └── empty.null
+│   ├── drugbank
+│   │   └── empty.null
+│   └── pubchem
 │       └── empty.null
 ├── e0_extract_chembl_usan_CHEMBL_details.py
 ├── f0_create_unified_chemical_database.py
@@ -61,57 +73,26 @@ Ensure you clone and install the following libraries directly from their Git rep
     └── meddra_graph.py
 ```
 
+## Download Publically Available CT-ADE-SOC and CT-ADE-PT Versions
+
+You can download the publicly available CT-ADE-SOC and CT-ADE-PT versions from HuggingFace. These datasets contain standardized annotations from ClinicalTrials.gov:
+
+- [`CT-ADE-SOC`](https://huggingface.co/datasets/anthonyyazdaniml/CT-ADE-SOC)
+- [`CT-ADE-PT`](https://huggingface.co/datasets/anthonyyazdaniml/CT-ADE-PT)
+
+The above datasets are identical to the SOC and PT versions you will produce in the `Typical Pipeline from Checkpoint` section.
+
 ## Typical Pipeline from Checkpoint
 
-Follow this procedure if you aim to recreate the original dataset as detailed in our paper. For instructions on creating an updated version of CT-ADE, refer to the next section titled `Typical Pipeline For an Up-to-Date CT-ADE Dataset`.
+Follow this procedure if you aim to recreate the dataset detailed in our paper for all levels (SOC, HLGT, HLT, and PT). For instructions on creating an updated version of CT-ADE, refer to the next section titled `Typical Pipeline For an Up-to-Date CT-ADE Dataset`.
 
-Ensure you have the intermediate data files saved...
+### 1. Place your licensed data
+Place your unzipped MedDRA files in the directory `./data/MedDRA_25_0_English` and your DrugBank XML database in the directory `./data/drugbank`.
 
-## Typical Pipeline For an Up-to-Date CT-ADE Dataset
+### 2. Download checkpoint from HuggingFace
+Download [`chembl_approved, chembl_usan, clinicaltrials_gov, pubchem`](https://huggingface.co/datasets/anthonyyazdaniml/CTADE_v1_initial_release_checkpoint) files and place them accordingly.
 
-The typical pipeline for generating the CT-ADE dataset and running the models involves several steps. Here follows a step-by-step guide to creating an updated version of CT-ADE.
-
-### 1. Download Clinical Trials Data
-
-Download clinical trials data from ClinicalTrials.gov using the `a0_download_clinical_trials.py` script.
-
-```bash
-python a0_download_clinical_trials.py
-```
-
-### 2. Extract Completed or Terminated Interventional Clinical Trials
-
-Extract only the completed or terminated interventional clinical trials.
-
-```bash
-python a1_extract_completed_or_terminated_interventional_results_clinical_trials.py
-```
-
-### 3. Extract and Preprocess Monopharmacy Clinical Trials
-
-Filter out and preprocess the monopharmacy clinical trials.
-
-```bash
-python a2_extract_and_preprocess_monopharmacy_clinical_trials.py
-```
-
-### 4. Download PubChem CIDs
-
-Download PubChem CIDs for the drugs used in the clinical trials.
-
-```bash
-python b0_download_pubchem_cids.py
-```
-
-### 5. Download PubChem CID Details
-
-Download details for the PubChem CIDs.
-
-```bash
-python b1_download_pubchem_cid_details.py
-```
-
-### 6. Extract DrugBank DBID Details
+### 3. Extract DrugBank DBID Details
 
 Extract drug details from the DrugBank database.
 
@@ -119,23 +100,7 @@ Extract drug details from the DrugBank database.
 python c0_extract_drugbank_dbid_details.py
 ```
 
-### 7. Extract ChEMBL Approved Details
-
-Extract details of approved drugs from the ChEMBL database.
-
-```bash
-python d0_extract_chembl_approved_CHEMBL_details.py
-```
-
-### 8. Extract ChEMBL USAN Details
-
-Extract details of USAN drugs from the ChEMBL database.
-
-```bash
-python e0_extract_chembl_usan_CHEMBL_details.py
-```
-
-### 9. Create Unified Chemical Database
+### 4. Create Unified Chemical Database
 
 Create a unified database combining information from PubChem, DrugBank, and ChEMBL.
 
@@ -143,7 +108,7 @@ Create a unified database combining information from PubChem, DrugBank, and ChEM
 python f0_create_unified_chemical_database.py
 ```
 
-### 10. Create Raw CT-ADE Dataset
+### 5. Create Raw CT-ADE Dataset
 
 Generate the raw CT-ADE dataset from the processed clinical trials data.
 
@@ -151,7 +116,7 @@ Generate the raw CT-ADE dataset from the processed clinical trials data.
 python g0_create_ct_ade_raw.py
 ```
 
-### 11. Create MedDRA Annotations
+### 6. Create MedDRA Annotations
 
 Annotate the CT-ADE dataset with MedDRA terms.
 
@@ -159,7 +124,7 @@ Annotate the CT-ADE dataset with MedDRA terms.
 python g1_create_ct_ade_meddra.py
 ```
 
-### 12. Create Classification Datasets
+### 7. Create Classification Datasets
 
 Generate the final classification datasets for modeling.
 
@@ -167,9 +132,112 @@ Generate the final classification datasets for modeling.
 python g2_create_ct_ade_classification_datasets.py
 ```
 
-### 13. Training Models
+## Typical Pipeline For an Up-to-Date CT-ADE Dataset
 
-#### Discriminative Models (DLLMs)
+Here follows a step-by-step guide to creating an updated version of CT-ADE.
+
+### 1. Place your licensed data
+Place your unzipped MedDRA files in the directory `./data/MedDRA_25_0_English` and your DrugBank XML database in the directory `./data/drugbank`.
+
+### 2. Download Clinical Trials Data
+
+Download clinical trials data from ClinicalTrials.gov using the `a0_download_clinical_trials.py` script.
+
+```bash
+python a0_download_clinical_trials.py
+```
+
+### 3. Extract Completed or Terminated Interventional Clinical Trials
+
+Extract only the completed or terminated interventional clinical trials.
+
+```bash
+python a1_extract_completed_or_terminated_interventional_results_clinical_trials.py
+```
+
+### 4. Extract and Preprocess Monopharmacy Clinical Trials
+
+Filter out and preprocess the monopharmacy clinical trials.
+
+```bash
+python a2_extract_and_preprocess_monopharmacy_clinical_trials.py
+```
+
+### 5. Download PubChem CIDs
+
+Download PubChem CIDs for the drugs used in the clinical trials.
+
+```bash
+python b0_download_pubchem_cids.py
+```
+
+### 6. Download PubChem CID Details
+
+Download details for the PubChem CIDs.
+
+```bash
+python b1_download_pubchem_cid_details.py
+```
+
+### 7. Extract DrugBank DBID Details
+
+Extract drug details from the DrugBank database.
+
+```bash
+python c0_extract_drugbank_dbid_details.py
+```
+
+### 8. Extract ChEMBL Approved Details
+
+Extract details of approved drugs from the ChEMBL database.
+
+```bash
+python d0_extract_chembl_approved_CHEMBL_details.py
+```
+
+### 9. Extract ChEMBL USAN Details
+
+Extract details of USAN drugs from the ChEMBL database.
+
+```bash
+python e0_extract_chembl_usan_CHEMBL_details.py
+```
+
+### 10. Create Unified Chemical Database
+
+Create a unified database combining information from PubChem, DrugBank, and ChEMBL.
+
+```bash
+python f0_create_unified_chemical_database.py
+```
+
+### 11. Create Raw CT-ADE Dataset
+
+Generate the raw CT-ADE dataset from the processed clinical trials data.
+
+```bash
+python g0_create_ct_ade_raw.py
+```
+
+### 12. Create MedDRA Annotations
+
+Annotate the CT-ADE dataset with MedDRA terms.
+
+```bash
+python g1_create_ct_ade_meddra.py
+```
+
+### 13. Create Classification Datasets
+
+Generate the final classification datasets for modeling.
+
+```bash
+python g2_create_ct_ade_classification_datasets.py
+```
+
+## Training Models
+
+### Discriminative Models (DLLMs)
 
 Navigate to the `modeling/DLLMs` directory and run the training scripts with the desired configuration.
 
@@ -178,7 +246,7 @@ cd modeling/DLLMs
 ...
 ```
 
-#### Generative Models (GLLMs)
+### Generative Models (GLLMs)
 
 Navigate to the `modeling/GLLMs` directory and run the training scripts for different configurations.
 
@@ -188,7 +256,3 @@ For example, to train a model using SMILES only:
 cd modeling/GLLMs
 ...
 ```
-
-## Citation
-
-No citation is available yet.
