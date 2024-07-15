@@ -22,7 +22,6 @@ Ensure you clone and install the following libraries directly from their Git rep
 
 - [`transformers`](https://github.com/huggingface/transformers)
 - [`trl`](https://github.com/huggingface/trl)
-- [`flash_attention`](https://github.com/Dao-AILab/flash-attention)
 
 ## Repository Structure
 
