@@ -84,7 +84,7 @@ The above datasets are identical to the SOC and PT versions you will produce in 
 
 ## Typical Pipeline from Checkpoint
 
-Follow this procedure if you aim to recreate the dataset detailed in our paper for all levels (SOC, HLGT, HLT, and PT). For instructions on creating an updated version of CT-ADE, refer to the next section titled `Typical Pipeline For an Up-to-Date CT-ADE Dataset`.
+Follow this procedure if you aim to recreate the dataset detailed in our paper for all levels (SOC, HLGT, HLT, and PT).
 
 ### 1. Place your licensed data
 Place your unzipped MedDRA files in the directory `./data/MedDRA_25_0_English` and your DrugBank XML database in the directory `./data/drugbank`.
@@ -125,109 +125,6 @@ python g1_create_ct_ade_meddra.py
 ```
 
 ### 7. Create Classification Datasets
-
-Generate the final classification datasets for modeling.
-
-```bash
-python g2_create_ct_ade_classification_datasets.py
-```
-
-## Typical Pipeline For an Up-to-Date CT-ADE Dataset
-
-Here follows a step-by-step guide to creating an updated version of CT-ADE.
-
-### 1. Place your licensed data
-Place your unzipped MedDRA files in the directory `./data/MedDRA_25_0_English` and your DrugBank XML database in the directory `./data/drugbank`.
-
-### 2. Download Clinical Trials Data
-
-Download clinical trials data from ClinicalTrials.gov using the `a0_download_clinical_trials.py` script.
-
-```bash
-python a0_download_clinical_trials.py
-```
-
-### 3. Extract Completed or Terminated Interventional Clinical Trials
-
-Extract only the completed or terminated interventional clinical trials.
-
-```bash
-python a1_extract_completed_or_terminated_interventional_results_clinical_trials.py
-```
-
-### 4. Extract and Preprocess Monopharmacy Clinical Trials
-
-Filter out and preprocess the monopharmacy clinical trials.
-
-```bash
-python a2_extract_and_preprocess_monopharmacy_clinical_trials.py
-```
-
-### 5. Download PubChem CIDs
-
-Download PubChem CIDs for the drugs used in the clinical trials.
-
-```bash
-python b0_download_pubchem_cids.py
-```
-
-### 6. Download PubChem CID Details
-
-Download details for the PubChem CIDs.
-
-```bash
-python b1_download_pubchem_cid_details.py
-```
-
-### 7. Extract DrugBank DBID Details
-
-Extract drug details from the DrugBank database.
-
-```bash
-python c0_extract_drugbank_dbid_details.py
-```
-
-### 8. Extract ChEMBL Approved Details
-
-Extract details of approved drugs from the ChEMBL database.
-
-```bash
-python d0_extract_chembl_approved_CHEMBL_details.py
-```
-
-### 9. Extract ChEMBL USAN Details
-
-Extract details of USAN drugs from the ChEMBL database.
-
-```bash
-python e0_extract_chembl_usan_CHEMBL_details.py
-```
-
-### 10. Create Unified Chemical Database
-
-Create a unified database combining information from PubChem, DrugBank, and ChEMBL.
-
-```bash
-python f0_create_unified_chemical_database.py
-```
-
-### 11. Create Raw CT-ADE Dataset
-
-Generate the raw CT-ADE dataset from the processed clinical trials data.
-
-```bash
-python g0_create_ct_ade_raw.py
-```
-
-### 12. Create MedDRA Annotations
-
-Annotate the CT-ADE dataset with MedDRA terms.
-
-```bash
-python g1_create_ct_ade_meddra.py
-```
-
-### 13. Create Classification Datasets
 
 Generate the final classification datasets for modeling.
 
